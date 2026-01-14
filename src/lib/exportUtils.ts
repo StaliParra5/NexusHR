@@ -162,7 +162,7 @@ export const generateEmployeePDF = async (employee: Employee) => {
     addDetail("ID de Empleado", employee.id);
     addDetail("Departamento", employee.department || 'No Asignado');
     addDetail("Rol / Cargo", employee.role || 'No Asignado');
-    addDetail("Estado Actual", employee.status);
+    addDetail("Estado Actual", employee.status || 'Active');
     addDetail("Carga de Trabajo", `${employee.workload}%`);
     addDetail("Fecha de Reporte", new Date().toLocaleDateString());
 
