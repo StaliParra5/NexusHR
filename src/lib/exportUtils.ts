@@ -102,7 +102,7 @@ export const generateTeamPDF = async (employees: Employee[], title: string = 'Re
         emp.role || 'N/A',
         emp.department || 'N/A',
         `${emp.workload}%`,
-        emp.status
+        emp.status || 'Active'
     ]);
 
     autoTable(doc, {
