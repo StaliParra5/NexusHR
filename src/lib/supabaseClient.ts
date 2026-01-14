@@ -8,9 +8,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 // 2. Validación de seguridad (Best Practice)
 // Esto evita que la app arranque si faltan las llaves, ahorrándote horas de debug
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    'Error Crítico: Faltan las variables de entorno NEXT_PUBLIC_SUPABASE_URL o NEXT_PUBLIC_SUPABASE_ANON_KEY en el archivo .env.local'
-  );
+  console.warn('⚠️ Advertencia: Faltan variables de entorno de Supabase (URL/Key). La app no podrá conectar con la base de datos.');
 }
 
 // 3. Exportamos la instancia lista para usar
