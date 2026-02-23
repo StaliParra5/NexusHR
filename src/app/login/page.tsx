@@ -124,15 +124,21 @@ export default function LoginPage() {
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
 
-      // Si Supabase devuelve sesión activa → auto-login (confirmación desactivada)
+      // Caso 1: Supabase devuelve sesión activa (email confirmation desactivada)
       if (data.session) {
         router.push('/dashboard');
         return;
       }
 
-      // Si se requiere confirmación por email
-      setSuccess('¡Cuenta creada! Revisa tu bandeja de entrada para confirmar tu email.');
-      setEmail('');
+      // Caso 2: No hay sesión directa → intentar login inmediato con las mismas credenciales
+      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+      if (!loginError && loginData.session) {
+        router.push('/dashboard');
+        return;
+      }
+
+      // Caso 3: Se requiere confirmación por email
+      setSuccess('¡Cuenta creada! Revisa tu bandeja de entrada para confirmar tu email y luego inicia sesión.');
       setPassword('');
       setConfirmPassword('');
     } catch (err: any) {
@@ -228,26 +234,26 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block text-sm font-medium text-slate-700">Contraseña</label>
-                  <button
-                    type="button"
-                    onClick={() => switchMode('forgot', true)}
-                    className="text-xs text-blue-600 hover:text-blue-700 font-medium hover:underline"
-                  >
-                    ¿Olvidaste tu contraseña?
-                  </button>
-                </div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Contraseña</label>
                 <PasswordInput value={password} onChange={setPassword} autoComplete="current-password" />
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-slate-600">
-                <input
-                  id="remember"
-                  type="checkbox"
-                  className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                />
-                <label htmlFor="remember" className="cursor-pointer select-none">Recordarme</label>
+              <div className="flex items-center justify-between text-sm text-slate-600">
+                <div className="flex items-center gap-2">
+                  <input
+                    id="remember"
+                    type="checkbox"
+                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label htmlFor="remember" className="cursor-pointer select-none">Recordarme</label>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => switchMode('forgot', true)}
+                  className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
               </div>
 
               <button
